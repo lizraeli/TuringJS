@@ -1,3 +1,3 @@
-# lizraeli.github.io
+TuringJS
 
-Repository for my experimental web page
+Turing Machine simulator written with AngularJS. Uses the Angular-xeditable directives to allow input in a table form.
