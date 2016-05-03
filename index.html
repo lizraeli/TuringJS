@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en-us" ng-app="app">
+  <head>
+    <title>Turing Machine Simulator</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- BOOTSTRAP -->
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css" >
+    <!-- font awesome -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
+
+    <!-- ANGULARJS -->
+    <script src="bower_components/angular/angular.min.js"></script>
+
+    <!-- filesaver -->
+    <script src="node_modules/angular-file-saver/dist/angular-file-saver.bundle.js"></script>
+    <!-- jQuery -->
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+
+    <!-- Jasny Bootstrap -->
+    <link rel="stylesheet" href="bower_components/jasny-bootstrap/dist/css/jasny-bootstrap.css">
+    <script src="bower_components/jasny-bootstrap/dist/js/jasny-bootstrap.min.js"></script>
+
+    <!-- XEDITABLE -->
+    <link href="bower_components/angular-xeditable/dist/css/xeditable.css" rel="stylesheet">
+    <script src="bower_components/angular-xeditable/dist/js/xeditable.js"></script>
+
+
+    <!-- MY FILES -->
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+
+
+    <script src="app.js"></script>
+    <script src="js/directives.js"></script>
+    <!-- ngSanitize -->
+    <script src="bower_components/angular-sanitize/angular-sanitize.min.js"></script>
+
+  </head>
+  <body style="padding: 20px">
+    <div class="row"  style="margin-bottom: 20px">
+      <div class="col-xs-4">
+      </div>
+      <div class = "col-xs-8">
+        <h1>Turing Machine Simulator</h1>
+      </div>
+    </div>
+    <div ng-app="app" ng-controller="EditableRowCtrl" class="container-fluid">
+      <div class="row" style="margin-bottom: 20px">
+        <div class="col-xs-7">
+        </div>
+        <div class="col-xs-2">
+        <!--  <input  class ="pull-left" type="file"   /> -->
+          <div class="fileinput fileinput-new pull-right" data-provides="fileinput">
+            <span class="btn btn-primary btn-file" >
+            <span class="fileinput-new" style="width:75%">Load</span>
+            <span class="fileinput-exists">Change</span>
+            <input type="file" name="..." on-read-file="loadContent($fileContent)"></span>
+            <span class="fileinput-filename"></span>
+            <a href="#" class="close fileinput-exists" data-dismiss="fileinput" style="float: none">&times;</a>
+          </div>
+        </div>
+        <div class="col-xs-1">
+
+          <button type="button"  class="btn btn-primary pull-right" id="saveButton"  ng-click="download()">
+            Save
+          </button>
+        </div>
+          <div class="col-xs-2">
+           <input type="text" ng-model="textFileName" class="form-control pull-left" placeholder="filename to save as">
+        </div>
+      </div>
+      <div class="table-responsive">
+      <table class="table table-striped table-hover" style="font-size:12px">
+        <tr style="font-weight: bold">
+          <td style="width:2%">State</td>
+          <td>0
+            <td style="width=3%">goto</td>
+            <td style="width=3%">write</td>
+            <td style="width=3%">dir</td>
+          </td>
+          <td>1
+            <td style="width=3%"></td>
+            <td style="width=3%"></td>
+            <td style="width=3%"></td>
+          </td>
+          <td>2
+            <td style="width=3%"></td>
+            <td style="width=3%"></td>
+            <td style="width=3%"></td>
+          </td>
+          <td>X
+            <td style="width=3%"></td>
+            <td style="width=3%"></td>
+            <td style="width=3%"></td>
+          </td>
+          <td>Y
+            <td style="width=3%"></td>
+            <td style="width=3%"></td>
+            <td style="width=3%"></td>
+          </td>
+          <td>Z
+            <td style="width=3%"></td>
+            <td style="width=3%"></td>
+            <td style="width=3%"></td>
+          </td>
+          <td>b
+            <td style="width=3%"></td>
+            <td style="width=3%"></td>
+            <td style="width=3%"></td>
+          </td>
+          <td style="width:5%"></td>
+        </tr>
+        <tr ng-repeat="state in stateArray">
+          <!-- editable id  -->
+          <!-- state -->
+          <td>
+
+            <span   editable-text="state.id" e-name="id" e-form="rowform" e-required>
+              {{ state.id || '-' }}
+            </span>
+          </td>
+
+          <!-- editable on zero  -->
+          <td>
+            <!-- new state -->
+            <td>
+              <span  editable-text="state.columns[0].state" e-name="zero.state" e-form="rowform">
+                {{ state.columns[0].state || '-' }}
+              </span>
+            </td>
+            <!-- symbol -->
+            <td>
+              <span  editable-text="state.columns[0].symbol" e-name="zero.symbol" e-form="rowform">
+                {{state.columns[0].symbol || '-' }}
+              </span>
+            </td>
+            <!-- direction -->
+            <td>
+              <span editable-text="state.columns[0].direction" e-name="zero.direction" e-form="rowform">
+                {{ state.columns[0].direction || '-' }}
+              </span>
+            </td>
+          </td>
+
+          <!-- editable  on one -->
+          <td>
+            <!-- new state -->
+            <td>
+              <span  editable-text="state.columns[1].state" e-name="one.state" e-form="rowform">
+                {{ state.columns[1].state || '-' }}
+              </span>
+            </td>
+            <!-- symbol -->
+            <td>
+              <span  editable-text="state.columns[1].symbol" e-name="one.symbol" e-form="rowform">
+                {{ state.columns[1].symbol || '-' }}
+              </span>
+            </td>
+            <!-- direction -->
+            <td>
+              <span  editable-text="state.columns[1].direction" e-name="one.direction" e-form="rowform">
+                {{ state.columns[1].direction || '-' }}
+              </span>
+            </td>
+          </td>
+          <!-- editable  on two -->
+          <td>
+            <!-- new state -->
+            <td>
+              <span  editable-text="state.columns[2].state" e-name="two.state" e-form="rowform">
+                {{ state.columns[2].state || '-' }}
+              </span>
+            </td>
+            <!-- symbol -->
+            <td>
+              <span  editable-text="state.columns[2].symbol" e-name="two.symbol" e-form="rowform">
+                {{ state.columns[2].symbol || '-' }}
+              </span>
+            </td>
+            <!-- direction -->
+            <td>
+              <span  editable-text="state.columns[2].direction" e-name="two.direction" e-form="rowform">
+                {{ state.columns[2].direction || '-' }}
+              </span>
+            </td>
+          </td>
+          <!-- editable  on x -->
+          <td>
+            <!-- new state -->
+            <td>
+              <span  editable-text="state.columns[3].state" e-name="x.state" e-form="rowform">
+                {{ state.columns[3].state || '-' }}
+              </span>
+            </td>
+            <!-- symbol -->
+            <td>
+              <span  editable-text="state.columns[3].symbol" e-name="x.symbol" e-form="rowform">
+                {{ state.columns[3].symbol || '-' }}
+              </span>
+            </td>
+            <!-- direction -->
+            <td>
+              <span  editable-text="state.columns[3].direction" e-name="x.direction" e-form="rowform">
+                {{ state.columns[3].direction || '-' }}
+              </span>
+            </td>
+          </td>
+          <!-- editable  on y -->
+          <td>
+            <!-- new state -->
+            <td>
+              <span  editable-text="state.columns[4].state" e-name="y.state" e-form="rowform">
+                {{ state.columns[4].state || '-' }}
+              </span>
+            </td>
+            <!-- symbol -->
+            <td>
+              <span  editable-text="state.columns[4].symbol" e-name="y.symbol" e-form="rowform">
+                {{ state.columns[4].symbol || '-' }}
+              </span>
+            </td>
+            <!-- direction -->
+            <td>
+              <span  editable-text="state.columns[4].direction" e-name="y.direction" e-form="rowform">
+                {{ state.columns[4].direction || '-' }}
+              </span>
+            </td>
+          </td>
+          <!-- editable  on z -->
+          <td>
+            <!-- new state -->
+            <td>
+              <span  editable-text="state.columns[5].state" e-name="z.state" e-form="rowform">
+                {{ state.columns[5].state || '-' }}
+              </span>
+            </td>
+            <!-- symbol -->
+            <td>
+              <span  editable-text="state.columns[5].symbol" e-name="z.symbol" e-form="rowform">
+                {{ state.columns[5].symbol || '-' }}
+              </span>
+            </td>
+            <!-- direction -->
+            <td>
+              <span  editable-text="state.columns[5].direction" e-name="z.direction" e-form="rowform">
+                {{ state.columns[5].direction || '-' }}
+              </span>
+            </td>
+          </td>
+
+          <!-- editable  on blank -->
+          <td>
+            <!-- new state -->
+            <td>
+              <span  editable-text="state.columns[6].state" e-name="zero" e-form="rowform">
+                {{ state.columns[6].state || '-' }}
+              </span>
+            </td>
+            <!-- symbol -->
+            <td>
+              <span  editable-text="state.columns[6].symbol" e-name="zero" e-form="rowform">
+                {{ state.columns[6].symbol || '-' }}
+              </span>
+            </td>
+            <!-- direction -->
+            <td>
+              <span  editable-text="state.columns[6].direction" e-name="zero" e-form="rowform">
+                {{ state.columns[6].direction || '-' }}
+              </span>
+            </td>
+          </td>
+
+          <td style="white-space: nowrap">
+            <!-- form -->
+            <form editable-form name="rowform" ng-show="rowform.$visible" class="form-buttons form-inline"   shown="inserted == state">
+              <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-primary">
+                save
+              </button>
+              <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-default">
+                cancel
+              </button>
+            </form>
+
+            <div class="buttons" ng-show="!rowform.$visible">
+              <button class="btn btn-primary" ng-click="rowform.$show()">edit</button>
+              <button class="btn btn-danger" ng-click="removeState($index)">del</button>
+            </div>
+
+          </td>
+        </tr>
+      </table>
+    </div>
+      <div class="row">
+        <div class="col-xs-2">
+		<h4>Examples:</h4>
+              <button class="btn btn-default" ng-click="loadExample()">palindrome detector (0's and 1's)</button>
+        </div>
+        <div class="col-xs-2 col-lg-push-7">
+          <button class="btn btn-default" ng-click="addState()">Add row</button>
+        </div>
+
+      </div>
+
+
+      <br><br>
+
+      <div class="row">
+        <div class="col-lg-3 col-lg-push-9">
+          <form class="form-horizontal" ng-submit="run()">
+            <div class="form-group">
+              <label class="control-label col-xs-3" for="sequence">Sequence</label>
+              <div class="col-xs-9">
+                <input ng-model="sequence" id="sequence" class="form-control" placeholder="0 / 1 / 2 / X / Y / Z / b" pattern="([0-2]|Z|X|Y|b)+" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-xs-12">
+                <input type="submit" class="form-control btn btn-success" value="Run">
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="row">
+
+          <div class="panel panel-primary">
+            <div class="panel-heading">Output</div>
+            <div class="panel-body">
+              <div class="row">
+              <div class="col-xs-12">
+                <p ng-bind-html="htmlOutput"></p>
+              </div>
+            </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="navbar-fixed-bottom">
+        <div class="panel-footer">
+          by Lev Izraelit
+        </div>
+      </div>
+
+    </body>
+  </html>
